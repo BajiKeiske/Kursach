@@ -1,0 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Proga
+{
+        public enum TokenType
+        {
+            VAR, INTEGER, REAL, CHAR, BEGIN, FOR, TO, DO, END, EXPR, ID, LITERAL, 
+            COMMA, COLON, SEMICOLON, POINT, MINUS, PLUS, MULTIPLICATION, DIV, COEQ, LPAR, RPAR,
+            Programma, SpisokOpisaniy, Opisanie, SpisokPeremennih, SpisokOperatorov, Operator, Prisvaivanie, Chicl, Tip
+    }
+        class Token
+        {
+            public TokenType Type;
+            public string Value;
+            public Token(TokenType type)
+            {
+                Type = type;
+            }
+            public override string ToString()
+            {
+                return string.Format("{1}, {0}", Type, Value);
+            }
+        }
+}
