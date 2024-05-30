@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+namespace Proga
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void DownLoad_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Файлы txt (*.txt)|*.txt";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Reader read = new Reader();
+                    textBox1.Text = read.Read(dialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+            }
+        }
+
+        private void Run_Click(object sender, EventArgs e)
+        {
+            textBox2.Clear();
+            textBox3.Clear();
+            try
+            {
+                TabLex Tab1 = new TabLex();
+                if(textBox1.Text == "") 
+                {
+                    throw new Exception("Загрузите или введите код");
+                }
+                textBox2.Text = Tab1.Info(textBox1.Text);
+                TabTok tab2 = new TabTok(Tab1.Buff);
+                textBox3.Text = tab2.Info();
+                //LR lr = new LR(tab2.Tokens);
+                //lr.Start();
+                LL ll = new LL(tab2.Tokens);
+                Bauer bauer = new Bauer(tab2.Tokens);
+
+                Matr.Text = bauer.Info();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+    }
+}
