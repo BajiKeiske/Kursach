@@ -1,0 +1,223 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Proga
+{
+    internal class Bauer
+    {
+        List<Token> tokens;
+        int i = 0, counte = 0, count = 0;
+        Stack<Token> tmp = new Stack<Token>();
+        Stack<Token> E = new Stack<Token>();
+        Stack<Token> T = new Stack<Token>();
+        string str = "";
+        bool flag = true;
+        public Bauer(List<Token> tokens)
+        {
+            this.tokens = tokens;
+            while (i < tokens.Count - 1)
+            {
+                if (tokens[i].Type == TokenType.COEQ)
+                {
+                    i++;
+                    EXPR();
+                    flag = true;
+                    str += Matr() + "\r\n";
+                    counte = 0;
+                    count = 0;
+                }
+                i++;
+            }
+        }
+        void K()
+        {
+            if (E.Count <= 1)
+            {
+                throw new Exception("Отсутствуют операнды");
+            }
+            tmp.Push(E.Pop());
+            tmp.Push(E.Pop());
+            while (tmp.Count > 0)
+            {
+                E.Push(tmp.Pop());
+            }
+        }
+        private void EXPR()
+        {
+            while (flag)
+            {
+                switch (tokens[i].Type)
+                {
+                    case TokenType.LPAR:
+                        if (T.Count == 0 || T.Peek().Type == TokenType.LPAR || T.Peek().Type == TokenType.RPAR
+                            || T.Peek().Type == TokenType.PLUS || T.Peek().Type == TokenType.MINUS 
+                            || T.Peek().Type == TokenType.MULTIPLICATION || T.Peek().Type == TokenType.DIV)
+                        {
+                            T.Push(tokens[i++]);
+                        }
+                        else
+                        {
+                            throw new Exception("Некорректное арифметическое выражение");
+                        }
+                        break;
+                    case TokenType.RPAR:
+                        if(T.Count == 0) 
+                        {
+                            throw new Exception("Отсутствует скобка");
+                        }
+                        else if (T.Peek().Type == TokenType.LPAR) 
+                        {
+                            T.Pop();
+                            i++;
+                        }
+                        else if (T.Peek().Type == TokenType.PLUS || T.Peek().Type == TokenType.MINUS
+                            || T.Peek().Type == TokenType.MULTIPLICATION || T.Peek().Type == TokenType.DIV)
+                        {
+                            tmp.Push(T.Pop());
+                            K();
+                        }
+                        else
+                        {
+                            throw new Exception("Некорректное арифметическое выражение");
+                        }
+                        break;
+                    case TokenType.ID:
+                        E.Push(tokens[i++]);
+                        counte++;
+                        break;
+                    case TokenType.LITERAL:
+                        E.Push(tokens[i++]);
+                        counte++;
+                        break;
+                    default:
+                        if (tokens[i].Type == TokenType.PLUS || tokens[i].Type == TokenType.MINUS)
+                        {
+                            if (T.Count == 0 || T.Peek().Type == TokenType.LPAR)
+                            {
+                                T.Push(tokens[i++]);
+                            }
+                            else if (T.Peek().Type == TokenType.PLUS || T.Peek().Type == TokenType.MINUS)
+                            {
+                                tmp.Push(T.Pop());
+                                K();
+                                T.Push(tokens[i++]);
+                            }
+                            else if (T.Peek().Type == TokenType.MULTIPLICATION || T.Peek().Type == TokenType.DIV)
+                            {
+                                tmp.Push(T.Pop());
+                                K();
+                            }
+                            
+                            else
+                            {
+                                throw new Exception("Некорректное арифметическое выражение");
+                            }
+                        }
+                        else if (tokens[i].Type == TokenType.MULTIPLICATION
+                            || tokens[i].Type == TokenType.DIV)
+                        {
+                            if (T.Count == 0 || T.Peek().Type == TokenType.PLUS
+                                || T.Peek().Type == TokenType.MINUS || T.Peek().Type == TokenType.LPAR)
+                            {
+                                T.Push(tokens[i++]);
+                            }
+                            else if (T.Peek().Type == TokenType.MULTIPLICATION || T.Peek().Type == TokenType.DIV)
+                            {
+                                tmp.Push(T.Pop());
+                                K();
+                                T.Push(tokens[i++]);
+                            }
+                            else
+                            {
+                                throw new Exception("Некорректное арифметическое выражение");
+                            }
+                        }
+                        else if (tokens[i].Type == TokenType.SEMICOLON || tokens[i].Type == TokenType.TO)
+                        {
+                            if (T.Count == 0)
+                            {
+                                flag = false;
+                            }
+                            else if (T.Peek().Type == TokenType.PLUS || T.Peek().Type == TokenType.MINUS
+                                || T.Peek().Type == TokenType.MULTIPLICATION || T.Peek().Type == TokenType.DIV)
+                            {
+                                tmp.Push(T.Pop());
+                                K();
+                            }
+                            else if (T.Peek().Type == TokenType.LPAR)
+                            {
+                                throw new Exception("Отсутствует скобка");
+                            }
+                            else
+                            {
+                                throw new Exception("Некорректное арифметическое выражение");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Неверный символ в арифметическом выражении");
+                        }
+                        break;
+                }
+            }
+        }
+        string Matr()
+        {
+            while (E.Count > 0)
+            {
+                tmp.Push(E.Pop());
+                if (tmp.Peek().Type != TokenType.ID && tmp.Peek().Type != TokenType.LITERAL) { count++; }
+            }
+            if (counte - count != 1)
+            {
+                throw new Exception("Отсутствует оператор или операнд");
+            }
+            string str = "", v = ""; 
+            string[] s = new string[tmp.Count];
+            Token t;
+            int i = 1, j = 0; //номер действия и длина матрицы
+            while (tmp.Count > 0)
+            {
+                t = tmp.Pop();
+                if (t.Type == TokenType.DIV || t.Type == TokenType.MULTIPLICATION || t.Type == TokenType.PLUS
+                    || t.Type == TokenType.MINUS)
+                {
+                    if (j == 1)
+                    {
+                        throw new Exception("Отсутствует операнд");
+                    }
+                    if (t.Type == TokenType.PLUS)
+                    {
+                        v = "M" + i.ToString() + ": " + "+" + s[j - 2] + s[j - 1];
+                    }
+                    else if (t.Type == TokenType.MINUS)
+                    {
+                        v = "M" + i.ToString() + ": " + "-" + s[j - 2] + s[j - 1];
+                    }
+                    else if (t.Type == TokenType.DIV)
+                    {
+                        v = "M" + i.ToString() + ": " + "/" + s[j - 2] + s[j - 1];
+                    }
+                    else if (t.Type == TokenType.MULTIPLICATION)
+                    {
+                        v = "M" + i.ToString() + ": " + "*" + s[j - 2] + s[j - 1];
+                    }
+                    s[j - 2] = "M" + i++.ToString();
+                    s[j - 1] = null;
+                    j--;
+                    str += v + "\r\n";
+                }
+                else
+                { s[j++] = t.Value; }
+            }
+            return str;
+        }
+        public string Info()
+        {
+            return str;
+        }
+    }
+}
