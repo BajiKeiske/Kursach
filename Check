@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Proga
+{
+    internal class Check
+    {
+        public static Dictionary<string, TokenType> KeyWords = new Dictionary<string, TokenType>()
+        {
+            { "integer", TokenType.INTEGER },
+            { "var", TokenType.VAR },
+            { "do", TokenType.DO },
+            { "begin", TokenType.BEGIN },
+            { "real", TokenType.REAL },
+            { "char", TokenType.CHAR },
+            { "for", TokenType.FOR },
+            { "to", TokenType.TO },
+            { "end", TokenType.END }
+        };
+        public static bool IsSpecialWord(string word)
+        {
+            if (string.IsNullOrEmpty(word))
+            {
+                return false;
+            }
+            return (KeyWords.ContainsKey(word));
+        }
+        public static Dictionary<string, TokenType> SpecialSymbols = new Dictionary<string, TokenType>()
+        {
+            { ":=", TokenType.COEQ },
+            { "+", TokenType.PLUS },
+            { "-", TokenType.MINUS },
+            { "*", TokenType.MULTIPLICATION },
+            { "/", TokenType.DIV },
+            { ",", TokenType.COMMA },
+            { ";", TokenType.SEMICOLON },
+            { ".", TokenType.POINT },
+            { ":", TokenType.COLON },
+            { "(", TokenType.LPAR },
+            { ")", TokenType.RPAR }
+        };
+        public static bool IsSpecialSymbol(string ch)
+        {
+            return SpecialSymbols.ContainsKey(ch);
+        }
+    }
+}
