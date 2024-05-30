@@ -1,0 +1,237 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Proga
+{
+    internal class LL
+    {
+        List<Token> tokens;
+        int i = 0;
+        public LL(List<Token> tokens)
+        {
+            this.tokens = tokens;
+            Programma();
+        }
+        private void Programma() 
+        {
+            SpisokOpisaniy();
+            if (tokens[i].Type != TokenType.BEGIN)
+            {
+                throw new Exception("Ожидался begin вместо " + tokens[i].Type);
+            }
+            i++;
+            SpisokOperatorov();
+            if (tokens[i].Type != TokenType.END)
+            {
+                throw new Exception("Ожидался end вместо " + tokens[i].Type);
+            }
+            i++;
+            if (tokens[i].Type != TokenType.POINT)
+            {
+                throw new Exception("Ожидался . вместо " + tokens[i].Type);
+            }
+        }
+        private void SpisokOpisaniy() 
+        {
+            Opisanie();
+            if (tokens[i].Type != TokenType.SEMICOLON) 
+            {
+                throw new Exception("Ожидался ; вместо " + tokens[i].Type);
+            }
+            i++;
+            A();
+        }
+        private void Opisanie() 
+        {
+            if (tokens[i].Type != TokenType.ID) 
+            {
+                if (tokens[i].Type != TokenType.VAR) 
+                {
+                    throw new Exception("Ожидался var или id вместо " + tokens[i].Type);
+                }
+                i++;
+            }
+            SpisokPeremennih();
+            if (tokens[i].Type != TokenType.COLON)
+            {
+                throw new Exception("Ожидался : вместо " + tokens[i].Type);
+            }
+            i++;
+            Tip();
+            i++;
+        }
+
+        private void SpisokPeremennih() 
+        {
+            if (tokens[i].Type != TokenType.ID)
+            {
+                throw new Exception("Ожидался id вместо " + tokens[i].Type);
+            }
+            i++;
+            C();
+        }
+        private void SpisokOperatorov() 
+        {
+            Operator();
+            if (tokens[i].Type != TokenType.SEMICOLON)
+            {
+                throw new Exception("Ожидался ; вместо " + tokens[i].Type);
+            }
+            E();
+        }
+        private void Operator() 
+        {
+            if (tokens[i].Type == TokenType.ID) 
+            {
+                Prisvaivanie();
+            }
+            else if (tokens[i].Type == TokenType.FOR)
+            {
+                Chicl();
+            }
+            else 
+            {
+                throw new Exception("Ожидался id или for вместо " + tokens[i].Type);
+            }
+        }
+        private void Prisvaivanie() 
+        {
+            if (tokens[i].Type != TokenType.ID)
+            {
+                throw new Exception("Ожидался id вместо " + tokens[i].Type);
+            }
+            i++;
+            if (tokens[i].Type != TokenType.COEQ)
+            {
+                throw new Exception("Ожидался := вместо " + tokens[i].Type);
+            }
+            i++;
+            EXPR();
+        }
+        private void EXPR() 
+        {
+            while (tokens[i].Type != TokenType.SEMICOLON && tokens[i].Type != TokenType.TO)
+            {
+                i++;
+            }
+        }
+        private void Chicl() 
+        {
+            if (tokens[i].Type != TokenType.FOR)
+            {
+                throw new Exception("Ожидался for вместо " + tokens[i].Type);
+            }
+            i++;
+            Prisvaivanie();
+            if (tokens[i].Type != TokenType.TO)
+            {
+                throw new Exception("Ожидался to вместо " + tokens[i].Type);
+            }
+            i++;
+            if (tokens[i].Type != TokenType.ID)
+            {
+                throw new Exception("Ожидался id вместо " + tokens[i].Type);
+            }
+            i++;
+            if (tokens[i].Type != TokenType.DO)
+            {
+                throw new Exception("Ожидался do вместо " + tokens[i].Type);
+            }
+            i++;
+            if (tokens[i].Type != TokenType.BEGIN)
+            {
+                throw new Exception("Ожидался begin вместо " + tokens[i].Type);
+            }
+            i++;
+            SpisokOperatorov();
+            if (tokens[i].Type != TokenType.END)
+            {
+                throw new Exception("Ожидался end вместо " + tokens[i].Type);
+            }
+        }
+        private void Tip() 
+        {
+            if (tokens[i].Type != TokenType.INTEGER && tokens[i].Type != TokenType.REAL &&
+                tokens[i].Type != TokenType.CHAR)
+            {
+                throw new Exception("Ожидался тип вместо " + tokens[i].Type);
+            }
+        }
+        private void A() 
+        {
+            if (tokens[i].Type == TokenType.VAR || tokens[i].Type == TokenType.ID) 
+            {
+                Opisanie();
+            }
+            if (tokens[i].Type != TokenType.SEMICOLON) 
+            {
+                throw new Exception("Ожидался ; вместо " + tokens[i].Type);
+            }
+            i++;
+            B();
+        }
+        private void B() 
+        {
+            if (tokens[i].Type == TokenType.VAR || tokens[i].Type == TokenType.ID)
+            {
+                A();
+            }
+            if (tokens[i].Type != TokenType.BEGIN) 
+            {
+                throw new Exception("Ожидался begin вместо " + tokens[i].Type);
+            }
+        }
+        private void C() 
+        {
+            if (tokens[i].Type == TokenType.COMMA)
+            {
+                i++;
+                if (tokens[i].Type != TokenType.ID)
+                {
+                    throw new Exception("Ожидался , или идентификатор вместо " + tokens[i].Type);
+                }
+                i++;
+            }
+            D();
+        }
+        private void D() 
+        {
+            if (tokens[i].Type == TokenType.COMMA)
+            {
+                C();
+            }
+            if (tokens[i].Type != TokenType.COLON)
+            {
+                throw new Exception("Ожидался : вместо " + tokens[i].Type);
+            }
+        }
+        private void E() 
+        {
+            if (tokens[i].Type == TokenType.ID || tokens[i].Type == TokenType.FOR)
+            {
+                Operator();
+                i++;
+            }
+            if (tokens[i].Type != TokenType.SEMICOLON)
+            {
+                throw new Exception("Ожидался ; вместо " + tokens[i].Type);
+            }
+            i++;
+            F();
+        }
+        private void F() 
+        {
+            if (tokens[i].Type == TokenType.ID || tokens[i].Type == TokenType.FOR)
+            {
+                E();
+            }
+            if (tokens[i].Type != TokenType.END)
+            {
+                throw new Exception("Ожидался end вместо " + tokens[i].Type);
+            }
+        }
+    }
+}
