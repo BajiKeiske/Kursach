@@ -1,0 +1,717 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Proga
+{
+    internal class LR
+    {
+        List<Token> tokens;
+        int i = 0;
+        int state;
+        Stack<Token> stackTok;
+        Stack<int> stackState;
+        bool flag = true;
+        public LR(List<Token> tokens)
+        {
+            this.tokens = tokens;
+            stackTok = new Stack<Token>();
+            stackState = new Stack<int>();
+            GoToState(0);
+        }
+        public void Start()
+        {
+            while (flag)
+            {
+                switch (state)
+                {
+                    case 0: State0(); break;
+                    case 1: State1(); break;
+                    case 2: State2(); break;
+                    case 3: State3(); break;
+                    case 4: State4(); break;
+                    case 5: State5(); break;
+                    case 6: State6(); break;
+                    case 7: State7(); break;
+                    case 8: State8(); break;
+                    case 9: State9(); break;
+                    case 10: State10(); break;
+                    case 11: State11(); break;
+                    case 12: State12(); break;
+                    case 13: State13(); break;
+                    case 14: State14(); break;
+                    case 15: State15(); break;
+                    case 16: State16(); break;
+                    case 17: State17(); break;
+                    case 18: State18(); break;
+                    case 19: State19(); break;
+                    case 20: State20(); break;
+                    case 21: State21(); break;
+                    case 22: State22(); break;
+                    case 23: State23(); break;
+                    case 24: State24(); break;
+                    case 25: State25(); break;
+                    case 26: State26(); break;
+                    case 27: State27(); break;
+                    case 28: State28(); break;
+                    case 29: State29(); break;
+                    case 30: State30(); break;
+                    case 31: State31(); break;
+                    case 32: State32(); break;
+                    case 33: State33(); break;
+                    case 34: State34(); break;
+                    case 35: State35(); break;
+                    case 36: State36(); break;
+                    case 37: State37(); break;
+                    case 38: State38(); break;
+                    case 39: State39(); break;
+                }
+            }
+        }
+        void State0()
+        {
+            if (stackTok.Count == 0)
+            {
+                Shift();
+            }
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Programma://добавить новые токены
+                    flag = false;
+                    break;
+                case TokenType.SpisokOpisaniy:
+                    GoToState(1);
+                    break;
+                case TokenType.Opisanie:
+                    GoToState(2);
+                    break;
+                case TokenType.VAR:
+                    GoToState(3);
+                    break;
+                case TokenType.SpisokPeremennih:
+                    GoToState(4);
+                    break;
+                case TokenType.ID:
+                    GoToState(5);
+                    break;
+                default:
+                    throw new Exception("Ожидался var вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State1()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.SpisokOpisaniy:
+                    Shift();
+                    break;
+                case TokenType.BEGIN:
+                    GoToState(6);
+                    break;
+                case TokenType.Opisanie:
+                    GoToState(36);
+                    break;
+                case TokenType.VAR:
+                    GoToState(3);
+                    break;
+                case TokenType.SpisokPeremennih:
+                    GoToState(4);
+                    break;
+                case TokenType.ID:
+                    GoToState(5);
+                    break;
+                default:
+                    throw new Exception("Ожидались id, begin или var вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State2()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Opisanie:
+                    Shift();
+                    break;
+                case TokenType.SEMICOLON:
+                    GoToState(7);
+                    break;
+                default:
+                    throw new Exception("Ожидалась ;" + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State3()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.VAR:
+                    Shift();
+                    break;
+                case TokenType.SpisokPeremennih:
+                    GoToState(8);
+                    break;
+                case TokenType.ID:
+                    GoToState(5);
+                    break;
+                default:
+                    throw new Exception("Ожидались var или идентификатор вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State4()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.SpisokPeremennih:
+                    Shift();
+                    break;
+                case TokenType.COLON:
+                    GoToState(9);
+                    break;
+                case TokenType.COMMA:
+                    GoToState(10);
+                    break;
+                default:
+                    throw new Exception("Ожидались : или , вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State5()
+        {
+
+            if (stackTok.Peek().Type == TokenType.ID)
+            {
+                Reduce(1, TokenType.SpisokPeremennih);
+            }
+            else
+            {
+                throw new Exception("Ожидалось id вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State6()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.BEGIN:
+                    Shift();
+                    break;
+                case TokenType.SpisokOperatorov:
+                    GoToState(11);
+                    break;
+                case TokenType.Operator:
+                    GoToState(12);
+                    break;
+                case TokenType.Prisvaivanie:
+                    GoToState(13);
+                    break;
+                case TokenType.Chicl:
+                    GoToState(14);
+                    break;
+                case TokenType.ID:
+                    GoToState(15);
+                    break;
+                case TokenType.FOR:
+                    GoToState(16);
+                    break;
+                default:
+                    throw new Exception("Ожидались : или , вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State7()
+        {
+            if (stackTok.Peek().Type == TokenType.SEMICOLON)
+            {
+                Reduce(2, TokenType.SpisokOpisaniy);
+            }
+            else
+            {
+                throw new Exception("Ожидался ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State8()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.SpisokPeremennih:
+                    Shift();
+                    break;
+                case TokenType.COLON:
+                    GoToState(17);
+                    break;
+                case TokenType.COMMA:
+                    GoToState(10);
+                    break;
+                default:
+                    throw new Exception("Ожидались , или : вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State9()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.COLON:
+                    Shift();
+                    break;
+                case TokenType.Tip:
+                    GoToState(18);
+                    break;
+                case TokenType.INTEGER:
+                    GoToState(19);
+                    break;
+                case TokenType.REAL:
+                    GoToState(20);
+                    break;
+                case TokenType.CHAR:
+                    GoToState(21);
+                    break;
+                default:
+                    throw new Exception("Ожидались : или integer вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State10()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.COMMA:
+                    Shift();
+                    break;
+                case TokenType.ID:
+                    GoToState(22);
+                    break;
+                default:
+                    throw new Exception("Ожидались идентификатор или , вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State11()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.SpisokOperatorov:
+                    Shift();
+                    break;
+                case TokenType.END:
+                    GoToState(23);
+                    break;
+                case TokenType.Operator:
+                    GoToState(37);
+                    break;
+                case TokenType.Prisvaivanie:
+                    GoToState(13);
+                    break;
+                case TokenType.Chicl:
+                    GoToState(14);
+                    break;
+                case TokenType.ID:
+                    GoToState(15);
+                    break;
+                case TokenType.FOR:
+                    GoToState(16);
+                    break;
+                default:
+                    throw new Exception("Ожидались end или for вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State12()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Operator:
+                    Shift();
+                    break;
+                case TokenType.SEMICOLON:
+                    GoToState(24);
+                    break;
+                default:
+                    throw new Exception("Ожидалось ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State13() 
+        {
+
+            if (stackTok.Peek().Type == TokenType.Prisvaivanie)
+            {
+                Reduce(1, TokenType.Operator);
+            }
+            else
+            {
+                throw new Exception("Ожидалось присваивание вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State14()
+        {
+            if (stackTok.Peek().Type == TokenType.Chicl)
+            {
+                Reduce(1, TokenType.Operator);
+            }
+            else
+            {
+                throw new Exception("Ожидался цикл вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State15()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.ID:
+                    Shift();
+                    break;
+                case TokenType.COEQ:
+                    GoToState(25);
+                    break;
+                default:
+                    throw new Exception("Ожидалось := вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State16()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.FOR:
+                    Shift();
+                    break;
+                case TokenType.Prisvaivanie:
+                    GoToState(26);
+                    break;
+                case TokenType.ID:
+                    GoToState(15);
+                    break;
+                default:
+                    throw new Exception("Ожидалось for вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State17()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.COLON:
+                    Shift();
+                    break;
+                case TokenType.Tip:
+                    GoToState(27);
+                    break;
+                case TokenType.INTEGER:
+                    GoToState(19);
+                    break;
+                case TokenType.REAL:
+                    GoToState(20);
+                    break;
+                case TokenType.CHAR:
+                    GoToState(21);
+                    break;
+                default:
+                    throw new Exception("Ожидалось : вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State18()
+        {
+            if (stackTok.Peek().Type == TokenType.Tip)
+            {
+                Reduce(3, TokenType.Opisanie);
+            }
+            else
+            {
+                throw new Exception("Ожидался tip вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State19()
+        {
+            if (stackTok.Peek().Type == TokenType.INTEGER)
+            {
+                Reduce(1, TokenType.Tip);
+            }
+            else
+            {
+                throw new Exception("Ожидался integer вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State20()
+        {
+            if (stackTok.Peek().Type == TokenType.REAL)
+            {
+                Reduce(1, TokenType.Tip);
+            }
+            else
+            {
+                throw new Exception("Ожидался real вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State21()
+        {
+            if (stackTok.Peek().Type == TokenType.CHAR)
+            {
+                Reduce(1, TokenType.Tip);
+            }
+            else
+            {
+                throw new Exception("Ожидался char вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State22()
+        {
+            if (stackTok.Peek().Type == TokenType.ID)
+            {
+                Reduce(3, TokenType.SpisokPeremennih);
+            }
+            else
+            {
+                throw new Exception("Ожидался id вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State23()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.END:
+                    Shift();
+                    break;
+                case TokenType.POINT:
+                    GoToState(34);
+                    break;
+                default:
+                    throw new Exception("Ожидалось . вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State24()
+        {
+            if (stackTok.Peek().Type == TokenType.SEMICOLON)
+            {
+                Reduce(2, TokenType.SpisokOperatorov);
+            }
+            else
+            {
+                throw new Exception("Ожидался ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State25()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.COEQ:
+                    Shift();
+                    break;
+                case TokenType.ID:
+                    GoToState(28);
+                    break;
+                case TokenType.LITERAL:
+                    GoToState(28);
+                    break;
+                default:
+                    throw new Exception("Ожидалось ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State26()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Prisvaivanie:
+                    Shift();
+                    break;
+                case TokenType.TO:
+                    GoToState(29);
+                    break;
+                default:
+                    throw new Exception("Ожидалось to вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State27()
+        {
+            if (stackTok.Peek().Type == TokenType.Tip)
+            {
+                Reduce(4, TokenType.Opisanie);
+            }
+            else
+            {
+                throw new Exception("Ожидался tip вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State28()
+        {
+            if (stackTok.Peek().Type == TokenType.ID || stackTok.Peek().Type == TokenType.LITERAL)
+            {
+                while (tokens[i].Type != TokenType.SEMICOLON && tokens[i].Type != TokenType.TO) i++;
+                Reduce(3, TokenType.Prisvaivanie);
+            }
+            else
+            {
+                throw new Exception("Ожидался id или literal вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State29()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.TO:
+                    Shift();
+                    break;
+                case TokenType.ID:
+                    GoToState(30);
+                    break;
+                default:
+                    throw new Exception("Ожидалось to вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State30()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.ID:
+                    Shift();
+                    break;
+                case TokenType.DO:
+                    GoToState(31);
+                    break;
+                default:
+                    throw new Exception("Ожидалось do вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State31()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.DO:
+                    Shift();
+                    break;
+                case TokenType.BEGIN:
+                    GoToState(32);
+                    break;
+                default:
+                    throw new Exception("Ожидалось do вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State32()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.BEGIN:
+                    Shift();
+                    break;
+                case TokenType.SpisokOperatorov:
+                    GoToState(33);
+                    break;
+                case TokenType.Operator:
+                    GoToState(12);
+                    break;
+                case TokenType.Prisvaivanie:
+                    GoToState(13);
+                    break;
+                case TokenType.Chicl:
+                    GoToState(14);
+                    break;
+                case TokenType.ID:
+                    GoToState(15);
+                    break;
+                case TokenType.FOR:
+                    GoToState(16);
+                    break;
+                default:
+                    throw new Exception("Ожидались begin, идетификатор или for вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State33()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.SpisokOperatorov:
+                    Shift();
+                    break;
+                case TokenType.END:
+                    GoToState(35);
+                    break;
+                default:
+                    throw new Exception("Ожидалось end вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State34()
+        {
+            if (stackTok.Peek().Type == TokenType.POINT)
+            {
+                Reduce(5, TokenType.Programma);
+            }
+            else
+            {
+                throw new Exception("Ожидался . вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State35()
+        {
+            if (stackTok.Peek().Type == TokenType.END)
+            {
+                Reduce(8, TokenType.Chicl);
+            }
+            else
+            {
+                throw new Exception("Ожидался end вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State36()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Opisanie:
+                    Shift();
+                    break;
+                case TokenType.SEMICOLON:
+                    GoToState(38);
+                    break;
+                default:
+                    throw new Exception("Ожидалось ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State37()
+        {
+            switch (stackTok.Peek().Type)
+            {
+                case TokenType.Operator:
+                    Shift();
+                    break;
+                case TokenType.SEMICOLON:
+                    GoToState(39);
+                    break;
+                default:
+                    throw new Exception("Ожидалось ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State38()
+        {
+            if (stackTok.Peek().Type == TokenType.SEMICOLON)
+            {
+                Reduce(3, TokenType.SpisokOpisaniy);
+            }
+            else
+            {
+                throw new Exception("Ожидался ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void State39()
+        {
+            if (stackTok.Peek().Type == TokenType.SEMICOLON)
+            {
+                Reduce(3, TokenType.SpisokOperatorov);
+            }
+            else
+            {
+                throw new Exception("Ожидался ; вместо " + stackTok.Peek().Type.ToString());
+            }
+        }
+        void Shift()
+        {
+            stackTok.Push(tokens[i++]); //сдвиг на следующий токен
+        }
+        void GoToState(int state)
+        {
+            stackState.Push(state);//закидывает состояние в стек
+            this.state = state;
+        }
+        void Reduce(int n, TokenType type)
+        {
+            while (n != 0)
+            {
+                stackTok.Pop();
+                stackState.Pop();
+                n--;
+            }
+            Token token = new Token(type);
+            stackTok.Push(token);
+            GoToState(stackState.Pop());
+        }
+        
+    }
+}
